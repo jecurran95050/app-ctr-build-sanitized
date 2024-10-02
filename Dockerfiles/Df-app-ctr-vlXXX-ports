@@ -1,0 +1,12 @@
+FROM nginx:1.19.6
+MAINTAINER James Curran "jacurran@cisco.com"
+RUN apt-get update -y && \
+    apt-get install -y python3 python3-pip redis-server git vim iputils-ping python3-dev libpq-dev cron
+RUN apt-get install -y perl libwww-perl
+COPY ./requirements.txt /requirements.txt
+RUN pip3 install -r requirements.txt
+RUN git clone https://***********/scm/~jacurran/app-ctr-vlXXX-ports.git
+WORKDIR /app-ctr-vlXXX-ports
+RUN cp ./misc/default.conf /etc/nginx/conf.d/default.conf
+RUN cp ./misc/dashboard.html /usr/local/lib/python3.7/dist-packages/rq_dashboard/templates/rq_dashboard/dashboard.html
+CMD bash -c 'python3 startup.py && python3 UI.py'

@@ -1,0 +1,50 @@
+version: '3'
+services:
+  app-ctr-postgres:
+    image: postgres:XX.X
+    restart: always
+    environment:
+      POSTGRES_USER: XXXXXXXX
+      POSTGRES_PASSWORD: XXXXXXXX
+    container_name: app-ctr-postgres
+    volumes:
+      - ./vault/global/postgres:/var/lib/postgresql/data
+    ports:
+      - XXXX:XXXX
+
+  app-ctr-main:
+    restart: always
+    depends_on:
+      - app-ctr-postgres
+    build:
+      context: ./Dockerfiles
+      dockerfile: Df-app-ctr-main
+    ports:
+      - "XX:XX"
+      - "XXX:XXX"
+    container_name: app-ctr-main
+    volumes:
+      - .:/app-ctr-main/outside
+
+  app-ctr-vlXXX-ports:
+    restart: always
+    depends_on:
+      - app-ctr-main
+      - app-ctr-postgres
+    build:
+      context: ./Dockerfiles
+      dockerfile: Df-app-ctr-vlXXX-ports
+    container_name: app-ctr-vlXXX-ports
+
+  app-ctr-pgadmin:
+    image: dpage/pgadmin4:X.X
+    restart: always
+    depends_on:
+      - app-ctr-main
+      - app-ctr-postgres
+    environment:
+      PGADMIN_DEFAULT_EMAIL: XXX@XXX.com
+      PGADMIN_DEFAULT_PASSWORD: XXXXX
+    container_name: app-ctr-pgadmin
+    volumes:
+      - ./vault/global/pgadmin:/var/lib/pgadmin
